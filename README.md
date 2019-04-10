@@ -1,2 +1,2 @@
 # album-template
-An template for album
+A template for album
