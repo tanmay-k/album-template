@@ -54,17 +54,16 @@ var displayImageswithCaption = async function()	{
 //To Get Album name we check whether the file ends with ".json" as extension or not if not the render the album ele get file with .json extension
 	//const albumPath = albumToRender.endsWith('.json')?`/posts/albums/${albumToRender}`:`/posts/albums/${albumToRender}.json`;
 
-	//const imagePath = `/posts/images`; //It is a path where all the images are stores.
+	const imagePath = `/posts/images`; //It is a path where all the images are stores.
 	try {
-		await archive.stat(albumPath); //check if that album exist
+		//await archive.stat(albumPath); //check if that album exist
+		await archive.stat('config.json');
 
-		var albumStr = await archive.readFile(albumPath); //read a file albumPath which is existed and make a archive of it
-		var album = JSON.parse(albumStr); //Parse the albumStr into json object
+		var albumStr = await archive.readFile('/config.json');
+		var album = JSON.parse(albumStr);
 		var dir = await archive.readdir(imagePath); //read images from subdirectory of post directory
 		var flag = true;
-		//var content =document.createElement('div'); //create an Element div of content field
-
-		var cardCol=document.querySelector('div[class="card-columns"]'); //Fetches the card-columns div into card-col variable
+		var cardCol = document.querySelector('div[class="card-columns"]'); //Fetches the card-columns div into card-col variable
 
 		for(let i=0;i<album.images.length;i++)	{        //to fetching the images in a album folder
 
@@ -112,7 +111,7 @@ var displayImageswithCaption = async function()	{
 			cardFooter.setAttribute('data-toggle','modal');
 			cardFooter.setAttribute('data-target','#myModal')
 			cardFooter.setAttribute('id',`footer-${i}`);
-			cardFooter.innerHTML = "Click here to add caption to this image";
+			cardFooter.innerHTML = album.images[i][1] === ""?"Click here to add caption to this image":album.images[i][1];
 			//var caption =document.createElement('p');
 		//	caption.setAttribute('class','card-textarea');
 			//card.setAttribute('data-toggle','modal');
