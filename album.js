@@ -14,6 +14,7 @@ var displayImageswithCaption = async function()	{
 		var albumStr = await archive.readFile('/config.json');
 		//console.log(albumStr);
 		var albumConfig = JSON.parse(albumStr);
+		console.log(`/posts/albums/${albumConfig.name}.json`);
 		var albumStr = await archive.readFile(`/posts/albums/${albumConfig.name}.json`);
 		var album = JSON.parse(albumStr);
 		//console.log(album);
@@ -111,7 +112,7 @@ var editCaption = async function(event){
 		//console.log(cardid);
 		var imgid = `img-${id.split('-')[1]}`;
 		var imgSrc = document.querySelector(`#${imgid}`).src;
-		document.querySelector('#img-caption').src =imgSrc;
+		document.querySelector('#img-caption').src = imgSrc;
 	}
 };
 
@@ -130,7 +131,7 @@ document.querySelector('#saveid').addEventListener("click",addCaption);
 
 
 //displayImages();
-displayImageswithCaption();
+//displayImageswithCaption();
 
 var enableSave = function(){document.querySelector('#save-button').disabled = false;};
 var disableSave = function(){document.querySelector('#save-button').disabled = true;};
@@ -196,3 +197,74 @@ var deleteImage =async function(e){
 		save();
 	}
 };
+
+var checkAlbum = async function()	{
+	var imageList = await archive.readdir('/posts/images/');
+	console.log(imageList);
+	var albumName = await archive.readdir('/posts/albums/');
+	var configStr = await archive.readFile('/config.json');
+	var config = JSON.parse(configStr);
+	console.log(config);
+	var albumStr = await archive.readFile(`/posts/albums/${config.name}.json`);
+	var album = JSON.parse(albumStr);
+
+	Array.prototype.diff = function(a) {
+    		return this.filter(function(i) {return a.indexOf(i) < 0;});
+	};
+
+	var newArr = [];
+	for(let i=0;i<album.images.length;i++)	{
+		newArr.push(album.images[i][0]);
+	}
+
+	var diff = newArr.diff(imageList);
+	var newImages = [];
+	if( diff.length !== 0 ){
+		for(let i=0;i<imageList.length;i++)	{
+			if( newArr.includes(imageList[i]) )	{
+				newImages.push([newArr[i],album.images[i][1]]);
+			}
+			else {
+				newImages.push([newArr[i],""]);
+			}
+			//album.images.push()
+		}
+
+		updateAlbum(album,newImages);
+	}
+	else {
+		displayImageswithCaption();
+	}
+
+	console.log(newImages);
+};
+
+var updateAlbum = async function(album,newImageList)	{
+	var newAlbum = {
+		"name": album.name,
+		"url": album.url,
+		"images": newImageList,
+		"createdAt": album.createdAt
+	};
+	/*
+	for(let i=0;i<newImageList.length;i++)	{
+		album.images.push([newImageList[i],""]);
+	}*/
+
+	var albumStr = JSON.stringify(newAlbum);
+	await archive.unlink(`/posts/albums/${album.name}.json`);
+	console.log(`/posts/albums/${album.name}`);
+	await archive.writeFile(`/posts/albums/${album.name}.json`,albumStr);
+	displayImageswithCaption();
+}
+
+checkAlbum();
+
+function writeToClipboard (str) {
+  var textarea = document.createElement('txtarea');//yo`<textarea>${str}</textarea>`;
+  textarea.value = str;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+}
