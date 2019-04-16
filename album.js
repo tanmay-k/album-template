@@ -1,6 +1,7 @@
 var archive = new DatArchive(window.location);
 var albumToRender = localStorage.getItem('clickedAlbum');
 const defaultCaption = 'Click here to add caption to this image';
+document.querySelector("#share-txt").value = window.location;
 
 //Displaying image in card with a captionElement
 var displayImageswithCaption = async function()	{
@@ -78,19 +79,22 @@ var displayImageswithCaption = async function()	{
 			imgElement.setAttribute('width','100%');
 			imgElement.setAttribute('class','responsive');
 
+			var viewImageAnchor = document.createElement('a');
+			viewImageAnchor.setAttribute('href',imgSrc);
+
 			cardFooter.setAttribute('class','card-footer');
 			cardFooter.setAttribute('id',`footer-${i}`);
 
 			cardHeader.appendChild(deleteBtn);
 			card.appendChild(cardHeader);
-			cardBody.appendChild(imgElement);
+			viewImageAnchor.appendChild(imgElement);
+			cardBody.appendChild(viewImageAnchor);
+			//cardBody.appendChild(imgElement);
 			card.appendChild(cardBody);
 
 			card.appendChild(cardFooter);
 			cardCol.appendChild(card);
 		}
-
-
 	} catch (e) {
 		console.log(e);
 	} finally {
@@ -200,11 +204,11 @@ var deleteImage =async function(e){
 
 var checkAlbum = async function()	{
 	var imageList = await archive.readdir('/posts/images/');
-	console.log(imageList);
+	//console.log(imageList);
 	var albumName = await archive.readdir('/posts/albums/');
 	var configStr = await archive.readFile('/config.json');
 	var config = JSON.parse(configStr);
-	console.log(config);
+	//console.log(config);
 	var albumStr = await archive.readFile(`/posts/albums/${config.name}.json`);
 	var album = JSON.parse(albumStr);
 
@@ -217,26 +221,22 @@ var checkAlbum = async function()	{
 		newArr.push(album.images[i][0]);
 	}
 
-	var diff = newArr.diff(imageList);
+	var diff = imageList.diff(newArr);
+	console.log(diff);
 	var newImages = [];
 	if( diff.length !== 0 ){
-		for(let i=0;i<imageList.length;i++)	{
-			if( newArr.includes(imageList[i]) )	{
-				newImages.push([newArr[i],album.images[i][1]]);
-			}
-			else {
-				newImages.push([newArr[i],""]);
-			}
-			//album.images.push()
+		for(let i=0;i<diff.length;i++)	{
+			album.images.push([diff[i],""]);
 		}
 
-		updateAlbum(album,newImages);
+		//console.log(album.images);
+		updateAlbum(album,album.images);
 	}
 	else {
 		displayImageswithCaption();
 	}
 
-	console.log(newImages);
+	//console.log(newImages);
 };
 
 var updateAlbum = async function(album,newImageList)	{
@@ -268,3 +268,55 @@ function writeToClipboard (str) {
   document.execCommand('copy');
   document.body.removeChild(textarea);
 }
+/*
+var shareThisAlbum = function()	{
+	(function() {
+
+	    'use strict';
+
+	  // click events
+	  document.body.addEventListener('click', copy, true);
+
+	    // event handler
+	    function copy(e) {
+
+	    // find target element
+	    var
+	      t = e.target,
+	      c = t.dataset.copytarget,
+	      inp = (c ? document.querySelector(c) : null);
+
+	    // is element selectable?
+	    if (inp && inp.select) {
+
+	      // select text
+	      inp.select();
+
+	      try {
+	        // copy text
+	        document.execCommand('copy');
+	        inp.blur();
+
+	        // copied animation
+	        t.classList.add('copied');
+	        setTimeout(function() { t.classList.remove('copied'); }, 1500);
+	      }
+	      catch (err) {
+	        alert('please press Ctrl/Cmd+C to copy');
+	      }
+	    }
+	    }
+
+	})();
+}*/
+
+var shareThisAlbum = function()	{
+	var txtBox = document.querySelector("#share-txt");
+	txtBox.style = "";
+	txtBox.select();
+	document.execCommand("copy");
+	txtBox.style = "visibility:hidden";
+	alert("URL copied to clipboard!");
+}
+
+document.querySelector("#share-btn").addEventListener('click',shareThisAlbum);

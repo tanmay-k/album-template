@@ -20,7 +20,7 @@ class NavbarElement extends HTMLElement {
 			}
 		}
 
-		var getConfig = async function()	{
+		/*var getConfig = async function()	{
 			var path = '/config.json';
 			var archive = new DatArchive(window.location);
 			var configStr = await archive.readFile(path);
@@ -32,10 +32,10 @@ class NavbarElement extends HTMLElement {
 			var config = getConfig();
 			console.log(config);
 			return config;
-		};
+		};*/
 
-		var obj = getParentUrl();
-		console.log(obj);
+		//var obj = getParentUrl();
+		//console.log(obj);
 
 		shadow.innerHTML = `
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -48,7 +48,7 @@ class NavbarElement extends HTMLElement {
 			<span class="logo"><a class="navbar-brand" href="/">pixfly</a></span>
 
 			<ul class="navbar-nav">
-
+				${renderNavLink("/help.html","Help")}
 			</ul>
 		</nav>
 

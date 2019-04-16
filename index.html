@@ -18,7 +18,9 @@
 			<my-navbar></my-navbar>
 			<div class="contents">
 			<div id="save-btn-parent">
-				<button type="button" class="btn btn-primary float-right mt-4" id="save-button" disabled>Save</button>
+				<input type="text" id="share-txt" style="visibility:hidden">
+				<button type="button" class="btn btn-outline-primary float-right m-2" id="share-btn" data-copytarget="#share-txt"><i class="fa fa-share-alt-square" aria-hidden="true"></i></button>
+				<button type="button" class="btn btn-outline-primary float-right m-2" id="save-button" disabled>Save</button>
 			</div>
 			<br>
 			<br>
@@ -86,6 +88,8 @@
 		});
 	});
 </script-->
+		<script>
+		</script>
 
 		<script src="/album.js" charset="utf-8"></script>
 		<script type="module" src="/module/navbar.js"></script>
