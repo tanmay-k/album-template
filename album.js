@@ -15,7 +15,7 @@ var displayImageswithCaption = async function()	{
 		var albumStr = await archive.readFile('/config.json');
 		//console.log(albumStr);
 		var albumConfig = JSON.parse(albumStr);
-		console.log(`/posts/albums/${albumConfig.name}.json`);
+		//console.log(`/posts/albums/${albumConfig.name}.json`);
 		var albumStr = await archive.readFile(`/posts/albums/${albumConfig.name}.json`);
 		var album = JSON.parse(albumStr);
 		//console.log(album);
@@ -105,7 +105,7 @@ var displayImageswithCaption = async function()	{
 var id;
 //This function just shows the preview of image while adding caption
 var editCaption = async function(event){
-	console.log(event.target);
+	//console.log(event.target);
 
  	//id = event.target.attributes['id'].value;//to accessing event attribute
  	//console.log(id);
@@ -185,7 +185,7 @@ var deleteImage =async function(e){
 	if( ( e.toElement.localName === "i" & e.toElement.className === "fa fa-trash" ) || ( e.toElement.localName === "button" & e.toElement.className === "btn btn-outline-danger btn-sm" ) )	{
 		var Id = event.target.attributes['id'].value;//to accessing event attribute
 		id = Id;
-		console.log(Id);
+		//console.log(Id);
 //console.log(cardid);
 		var cardToDelete = document.querySelector(`#card-${Id.split('-')[1]}`);
 	//var cardCol = document.querySelector(`#${cardid}`);
@@ -195,7 +195,7 @@ var deleteImage =async function(e){
 		var file = document.querySelector(`#img-${Id.split('-')[1]}`).src;
 		file = file.split('/');
 		var fileToDelete = file[file.length-1];
-		console.log(`/posts/images/${fileToDelete}`);
+		//console.log(`/posts/images/${fileToDelete}`);
 		await archive.unlink(`/posts/images/${fileToDelete}`);
 		cardCol.removeChild(cardToDelete);
 		save();
@@ -222,7 +222,7 @@ var checkAlbum = async function()	{
 	}
 
 	var diff = imageList.diff(newArr);
-	console.log(diff);
+	//console.log(diff);
 	var newImages = [];
 	if( diff.length !== 0 ){
 		for(let i=0;i<diff.length;i++)	{
@@ -310,6 +310,7 @@ var shareThisAlbum = function()	{
 	})();
 }*/
 
+//This function copies album url to clipboard
 var shareThisAlbum = function()	{
 	var txtBox = document.querySelector("#share-txt");
 	txtBox.style = "";
